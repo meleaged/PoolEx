@@ -1,40 +1,33 @@
- 
 #include <stdio.h>
 #include <string.h>
 
-void remove_last_occurrence(char *str, const char *substr) {
-    char *pos = strstr(str, substr);  // находим последнее вхождение подстроки
-    if (pos != NULL) {
-        size_t len = strlen(substr);
-        memmove(pos, pos + len, strlen(pos + len) + 1);  // сдвигаем оставшуюся часть строки
-    }
-}
+void remove_last_occurrence(char *str, const char *sub) {
+    char *last_occurrence = NULL;
+    size_t sub_len = strlen(sub);
 
-char *strrstr(const char *haystack, const char *needle) {
-    char *result = NULL;
-    char *last = strstr(haystack, needle);
-    while (last != NULL) {
-        result = last;                    // запоминаем текущее вхождение
-        last = strstr(last + 1, needle);  // ищем следующее вхождение
+    // Найти последнее вхождение подстроки
+    char *current = str;
+    while ((current = strstr(current, sub)) != NULL) {
+        last_occurrence = current;
+        printf("current %s\n", current);
+        current += sub_len;  // Перемещаемся дальше для поиска следующих вхождений
     }
-    return result;  // возвращаем последнее вхождение
+
+    // Если нашли последнее вхождение, удаляем его
+    if (last_occurrence != NULL) {
+        memmove(last_occurrence, last_occurrence + sub_len, strlen(last_occurrence + sub_len) + 1);
+    }
 }
 
 int main() {
     char str[100];
-    char substr[50];
-
-    printf("Введите строку: ");
-    fgets(str, sizeof(str), stdin);
-    str[strcspn(str, "\n")] = 0;  // удаляем символ новой строки
-
-    printf("Введите подстроку для удаления: ");
-    fgets(substr, sizeof(substr), stdin);
-    substr[strcspn(substr, "\n")] = 0;  // удаляем символ новой строки
-
-    remove_last_occurrence(str, substr);
-
-    printf("Результат: %s\n", str);
+    char sub[50];
+    fgets(str, 100, stdin);
+    fgets(sub, 50, stdin);
+    str[strcspn(str, "\n")] = 0;
+    sub[strcspn(sub, "\n")] = 0;
+    remove_last_occurrence(str, sub);
+    printf("После удаления последнего вхождения подстроки: %s\n", str);
 
     return 0;
 }
